@@ -1,25 +1,110 @@
 import React from 'react'
-import {Row, Col} from 'antd'
-import {Menu, Icon} from 'antd';
+
+// ant design Form component
+import {
+    Button,
+    Col,
+    Checkbox,
+    Form,
+    Icon,
+    Input,
+    message,
+    Menu,
+    Modal,
+    Row,
+    Tabs
+} from 'antd'
 import 'antd/dist/antd.css'
+const TabPane = Tabs.TabPane
+const FormItem = Form.Item
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
-export default class PCHeader extends React.Component {
+class PCHeader extends React.Component {
     constructor() {
         super()
         this.state = {
-            current: 'top'
+            current: 'top',
+            modalVisible: false,
+            action: 'login',
+            hasLogined: false,
+            userNickName: '',
+            userid: 0
         }
     }
 
+    // Nav method
     handleClick(e) {
+        /*this.setState({
+         current: e.key
+         })*/
+        if (e.key === 'register') {
+            this.state.current = 'register'
+            this.setState({
+                modalVisible: true
+            })
+        } else {
+            this.setState({
+                current: e.key
+            })
+        }
+    }
+
+    // Modal method
+    handleCancel() {
         this.setState({
-            current: e.key
+            modalVisible: false
         })
     }
 
+    handleOK() {
+        this.setState({
+            modalVisible: false
+        })
+    }
+
+    handleSubmit(e) {
+        e.preventDefault()
+        let myFetchOptions = {
+            method: 'GET'
+        }
+        let formData = this.props.form.getFieldsValue()
+
+        fetch("http://newsapi.gugujiankong.com/Handler.ashx?action=" + this.state.action
+            + "&username=" + formData.userName + "&password=" + formData.password
+            + "&r_userName=" + formData.r_userName + "&r_password="
+            + formData.r_password + "&r_confirmPassword="
+            + formData.r_confirmPassword, myFetchOptions)
+            .then(response => response.json())
+            .then(json => {
+                this.setState({
+                    userNickName: json.NickName,
+                    userid: json.UserId
+                })
+            })
+
+        message.success('请求成功')
+        this.handleCancel.bind(this)()
+    }
+
     render() {
+        let {getFieldDecorator} = this.props.form
+        const userShow = this.state.hasLogined
+            ?
+            <Menu.Item key="logout" class="register">
+                <Button type='primary' htmlType='button'>{this.state.userNickName}</Button>
+                &nbsp;&nbsp;
+                <Link target="_blank">
+                    <Button type='dashed' htmlType='button'>个人中心</Button>
+                </Link>
+                &nbsp;&nbsp;
+                <Button type='ghost' htmltype="button">退出</Button>
+            </Menu.Item>
+            :
+            <Menu.Item key="register" class="register">
+                <Icon type="appstore"/>注册/登录
+            </Menu.Item>
+
         return (
             <header>
                 <Row>
@@ -31,8 +116,9 @@ export default class PCHeader extends React.Component {
                         </a>
                     </Col>
                     <Col span={16}>
+                        {/* Menu */}
                         <Menu
-                            onClick={this.handleClick}
+                            onClick={this.handleClick.bind(this)}
                             selectedKeys={[this.state.current]}
                             mode='horizontal'
                         >
@@ -60,7 +146,42 @@ export default class PCHeader extends React.Component {
                             <Menu.Item key="shishang">
                                 <Icon type="appstore"/>时尚
                             </Menu.Item>
+                            {userShow}
                         </Menu>
+
+                        {/* Modal */}
+                        <Modal
+                            title='用户中心'
+                            wrapClassName="vertical-center-modal"
+                            visible={this.state.modalVisible}
+                            onCancel={this.handleCancel.bind(this)}
+                            onOk={this.handleOK.bind(this)}
+                            onText=""
+                        >
+                            <Tabs type="card">
+                                <TabPane tab="注册" key="2">
+                                    <Form layout='horizontal' onSubmit={this.handleSubmit.bind(this)}>
+                                        <FormItem label='账户'>
+                                            {getFieldDecorator('r_username')(
+                                                <Input placeholder="请输入您的账号"/>
+                                            )}
+                                        </FormItem>
+                                        <FormItem label='密码'>
+                                            {getFieldDecorator('r_password')(
+                                                <Input type='password' placeholder="请输入您的账号"/>
+                                            )}
+                                        </FormItem>
+                                        <FormItem label='账户'>
+                                            {getFieldDecorator('r_confirmPassword')(
+                                                <Input type='password' placeholder="请确认您输入的密码"/>
+                                            )}
+                                        </FormItem>
+                                        <Button type='primary' htmlType='submit'>注册</Button>
+                                    </Form>
+                                </TabPane>
+                            </Tabs>
+                        </Modal>
+
                     </Col>
                     <Col span={2}></Col>
                 </Row>
@@ -68,3 +189,5 @@ export default class PCHeader extends React.Component {
         )
     }
 }
+
+export default PCHeader = Form.create()(PCHeader)
