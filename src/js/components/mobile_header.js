@@ -1,4 +1,5 @@
 import React from 'react'
+import {Router, Route, Link, browserHistory} from 'react-router'
 
 // ant design Form component
 import {
@@ -82,6 +83,12 @@ class MobileFooter extends React.Component {
                 })
             })
 
+        if (this.state.action === 'login') {
+            this.setState({
+                hasLogined: true
+            })
+        }
+
         message.success('请求成功')
         this.handleCancel.bind(this)()
     }
@@ -90,6 +97,19 @@ class MobileFooter extends React.Component {
         this.setState({
             modalVisible: true
         })
+    }
+
+    // Tab method
+    callback(key) {
+        if (key === 1) {
+            this.setState({
+                action: 'login'
+            })
+        } else if (key === 2) {
+            this.setState({
+                action: 'register'
+            })
+        }
     }
 
     render() {
@@ -119,7 +139,22 @@ class MobileFooter extends React.Component {
                     onOk={this.handleOK.bind(this)}
                     onText=""
                 >
-                    <Tabs type="card">
+                    <Tabs type="card" onChange={this.callback.bind(this)}>
+                        <TabPane tab="登录" key="1">
+                            <Form layout='horizontal' onSubmit={this.handleSubmit.bind(this)}>
+                                <FormItem label='账户'>
+                                    {getFieldDecorator('username')(
+                                        <Input placeholder="请输入您的账号"/>
+                                    )}
+                                </FormItem>
+                                <FormItem label='密码'>
+                                    {getFieldDecorator('password')(
+                                        <Input type='password' placeholder="请输入您的账号"/>
+                                    )}
+                                </FormItem>
+                                <Button type='primary' htmlType='submit'>登录</Button>
+                            </Form>
+                        </TabPane>
                         <TabPane tab="注册" key="2">
                             <Form layout='horizontal' onSubmit={this.handleSubmit.bind(this)}>
                                 <FormItem label='账户'>

@@ -1,4 +1,5 @@
 import React from 'react'
+import {Router, Route, Link, browserHistory} from 'react-router'
 
 // ant design Form component
 import {
@@ -78,13 +79,32 @@ class PCHeader extends React.Component {
             .then(response => response.json())
             .then(json => {
                 this.setState({
-                    userNickName: json.NickName,
+                    userNickName: json.NickUserName,
                     userid: json.UserId
                 })
             })
 
+        if (this.state.action === 'login') {
+            this.setState({
+                hasLogined: true
+            })
+        }
+
         message.success('请求成功')
         this.handleCancel.bind(this)()
+    }
+
+    // Tab method
+    callback(key) {
+        if (key === 1) {
+            this.setState({
+                action: 'login'
+            })
+        } else if (key === 2) {
+            this.setState({
+                action: 'register'
+            })
+        }
     }
 
     render() {
@@ -92,13 +112,13 @@ class PCHeader extends React.Component {
         const userShow = this.state.hasLogined
             ?
             <Menu.Item key="logout" class="register">
-                <Button type='primary' htmlType='button'>{this.state.userNickName}</Button>
+                <Button type='primary' className='a'>{this.state.userNickName}</Button>
                 &nbsp;&nbsp;
-                <Link target="_blank">
-                    <Button type='dashed' htmlType='button'>个人中心</Button>
+                <Link target="_blank" to={`/usercenter`} className='a'>
+                    <Button type="dashed">个人中心</Button>
                 </Link>
                 &nbsp;&nbsp;
-                <Button type='ghost' htmltype="button">退出</Button>
+                <Button type='ghost' className='a'>退出</Button>
             </Menu.Item>
             :
             <Menu.Item key="register" class="register">
@@ -158,7 +178,22 @@ class PCHeader extends React.Component {
                             onOk={this.handleOK.bind(this)}
                             onText=""
                         >
-                            <Tabs type="card">
+                            <Tabs type="card" defaultActiveKey="1" onChange={this.callback.bind(this)}>
+                                <TabPane tab="登录" key="1">
+                                    <Form layout='horizontal' onSubmit={this.handleSubmit.bind(this)}>
+                                        <FormItem label='账户'>
+                                            {getFieldDecorator('username')(
+                                                <Input placeholder="请输入您的账号"/>
+                                            )}
+                                        </FormItem>
+                                        <FormItem label='密码'>
+                                            {getFieldDecorator('password')(
+                                                <Input type='password' placeholder="请输入您的账号"/>
+                                            )}
+                                        </FormItem>
+                                        <Button type='primary' htmlType='submit'>登录</Button>
+                                    </Form>
+                                </TabPane>
                                 <TabPane tab="注册" key="2">
                                     <Form layout='horizontal' onSubmit={this.handleSubmit.bind(this)}>
                                         <FormItem label='账户'>
