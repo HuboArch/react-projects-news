@@ -34,6 +34,17 @@ class PCHeader extends React.Component {
         }
     }
 
+    // 记录登录状态
+    componentWillMount() {
+        if (localStorage.userid) {
+            this.setState({
+                hasLogined: true,
+                userNickName: localStorage.userNickName,
+                userid: localStorage.userid
+            })
+        }
+    }
+
     // Nav method
     handleClick(e) {
         /*this.setState({
@@ -82,6 +93,8 @@ class PCHeader extends React.Component {
                     userNickName: json.NickUserName,
                     userid: json.UserId
                 })
+                localStorage.userid = json.UserId
+                localStorage.userNickName = json.NickUserName
             })
 
         if (this.state.action === 'login') {
@@ -107,18 +120,26 @@ class PCHeader extends React.Component {
         }
     }
 
+    logout() {
+        localStorage.userid = ''
+        localStorage.userNickName = ''
+        this.setState({
+            hasLogined: false
+        })
+    }
+
     render() {
         let {getFieldDecorator} = this.props.form
         const userShow = this.state.hasLogined
             ?
             <Menu.Item key="logout" class="register">
-                <Button type='primary' className='a'>{this.state.userNickName}</Button>
+                <Button type='primary'>{this.state.userNickName}</Button>
                 &nbsp;&nbsp;
-                <Link target="_blank" to={`/usercenter`} className='a'>
+                <Link target="_blank" to={`/usercenter`}>
                     <Button type="dashed">个人中心</Button>
                 </Link>
                 &nbsp;&nbsp;
-                <Button type='ghost' className='a'>退出</Button>
+                <Button type='ghost' onClick={this.logout.bind(this)}>退出</Button>
             </Menu.Item>
             :
             <Menu.Item key="register" class="register">

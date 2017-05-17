@@ -33,6 +33,17 @@ class MobileFooter extends React.Component {
         }
     }
 
+    // 记录登录状态
+    componentWillMount() {
+        if (localStorage.userid) {
+            this.setState({
+                hasLogined: true,
+                userNickName: localStorage.userNickName,
+                userid: localStorage.userid
+            })
+        }
+    }
+
     // Nav method
     handleClick(e) {
         /*this.setState({
@@ -79,8 +90,10 @@ class MobileFooter extends React.Component {
             .then(json => {
                 this.setState({
                     userNickName: json.NickName,
-                    userid: json.UserId
+                    userid: json.UserId,
                 })
+                localStorage.userid = json.UserId
+                localStorage.userNickName = json.NickUserName
             })
 
         if (this.state.action === 'login') {
@@ -112,12 +125,21 @@ class MobileFooter extends React.Component {
         }
     }
 
+    // 登出
+    logout() {
+        localStorage.userid = ''
+        localStorage.userNickName = ''
+        this.setState({
+            hasLogined: false
+        })
+    }
+
     render() {
         let {getFieldDecorator} = this.props.form
         const userShow = this.state.hasLogined
             ?
             <Link>
-                <Icon type="inbox"/>
+                <Icon type="inbox" onClick={this.logout.bind(this)}/>
             </Link>
             :
             <Icon type="setting" onClick={this.login.bind(this)}/>
