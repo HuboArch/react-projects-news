@@ -8,12 +8,18 @@ export default class PCNewsImageBlock extends React.Component {
             news: ''
         };
     }
+
     componentWillMount() {
         var myFetchOptions = {
             method: 'GET'
         };
-        fetch("http://newsapi.gugujiankong.com/Handler.ashx?action=getnews&type=" + this.props.type + "&count=" + this.props.count, myFetchOptions).then(response => response.json()).then(json => this.setState({news: json}));
+        fetch("http://newsapi.gugujiankong.com/Handler.ashx?action=getnews&type="
+            + this.props.type + "&count="
+            + this.props.count, myFetchOptions)
+            .then(response => response.json())
+            .then(json => this.setState({news: json}));
     };
+
     render() {
         const styleImage = {
             display: "block",
