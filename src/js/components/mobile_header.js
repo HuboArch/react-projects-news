@@ -147,8 +147,10 @@ class MobileFooter extends React.Component {
         return (
             <div id="mobileHeader">
                 <header>
-                    <img src="./src/images/logo.png" alt="logo"/>
-                    <span>ReactNews</span>
+                    <a href="/">
+                        <img src="./src/images/logo.png" alt="logo"/>
+                        <span>ReactNews</span>
+                    </a>
                     {userShow}
                 </header>
 
