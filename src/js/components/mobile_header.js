@@ -138,7 +138,7 @@ class MobileFooter extends React.Component {
         let {getFieldDecorator} = this.props.form
         const userShow = this.state.hasLogined
             ?
-            <Link>
+            <Link to={'/usercenter'}>
                 <Icon type="inbox" onClick={this.logout.bind(this)}/>
             </Link>
             :

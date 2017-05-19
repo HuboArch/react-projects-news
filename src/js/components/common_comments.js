@@ -71,7 +71,7 @@ class CommonComments extends React.Component {
     render() {
         let {getFieldProps} = this.props.form;
         const {comments} = this.state;
-        const commnetList = comments.length
+        const commentsList = comments.length
             ? comments.map((comment, index) => (
                 <Card key={index} title={comment.UserName} extra={<a href="#"> 发布于 {comment.datetime} </a>}>
                     <p>{comment.Comments}</p>
@@ -82,7 +82,7 @@ class CommonComments extends React.Component {
             <div class="comment">
                 <Row>
                     <Col span={24}>
-                        {commnetList}
+                        {commentsList}
                         <Form onSubmit={this.handleSubmit.bind(this)}>
                             <FormItem label="您的评论">
                                 <Input type="textarea"
